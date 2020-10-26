@@ -4,12 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
 
 import java.util.Random;
 
-public class Spikes extends Obstacles {
+public class Bomb extends Obstacles {
 
-    private Bitmap bitmap;
+    private AnimationDrawable animation;
     // Detect enemies leaving the screen
     private int maxX;
     private int minX;
@@ -20,23 +21,22 @@ public class Spikes extends Obstacles {
 
 
     // Constructor
-    public Spikes(Context context, int screenX, int screenY) {
+    public Bomb(Context context, int screenX, int screenY) {
 
         super(context);
-        bitmap = BitmapFactory.decodeResource
-                (context.getResources(), R.drawable.spikes);
+        animation = (AnimationDrawable)context.getResources().getDrawable(R.drawable.animation_values);
         minY = 0;
         minX = 0;
         maxX = screenX;
         maxY = screenY;
-
         Random generator = new Random();
         speed = generator.nextInt(6)+10;
         y = 0;
-        x = generator.nextInt(maxX) - bitmap.getHeight();
+        Rect bounds = animation.getFrame(0).getBounds();
+        x = generator.nextInt(maxX) - bounds.width();
         //x = 500;
         //y = 500;
-        hitBox = new Rect(x,y, bitmap.getWidth(), bitmap.getHeight());
+        hitBox = bounds;
 
     }
 
@@ -44,8 +44,8 @@ public class Spikes extends Obstacles {
         return getSpeed();
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public AnimationDrawable getAnimation() {
+        return animation;
     }
 
     public int getX() {
@@ -69,20 +69,20 @@ public class Spikes extends Obstacles {
 
     public void update(int playerSpeed){
         y += speed;
+        Rect bounds = animation.getCurrent().getBounds();
 
         //respawn when off screen
         if(y > maxY){
             Random generator = new Random();
             speed = generator.nextInt(10)+10;
-            x = generator.nextInt(maxX) - bitmap.getWidth();
-            y = bitmap.getHeight();
+
+            x = generator.nextInt(maxX) - bounds.width();
+
+            y = bounds.height();
         }
 
         // Refresh hit box location
-        hitBox.left = x;
-        hitBox.top = y;
-        hitBox.right = x + bitmap.getWidth();
-        hitBox.bottom = y + bitmap.getHeight();
+        hitBox = bounds;
     }
 }
 

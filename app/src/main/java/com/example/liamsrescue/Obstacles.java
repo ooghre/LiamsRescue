@@ -6,8 +6,8 @@ import android.graphics.BitmapFactory;
 
 public abstract class Obstacles {
 
-    private int x, y;
-    private int speed = 0;
+    protected int x, y;
+    protected int speed;
 
     // Constructor
     public Obstacles(Context context) {
@@ -28,9 +28,6 @@ public abstract class Obstacles {
     public int getY() {
         return y;
     }
-
-    public void update() {
-        y++;
-    }
 }
+
 
