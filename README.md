@@ -3,5 +3,5 @@ Liam's Rescue is a mobile arcade style game for android devices. The game follow
 
 To play
 1) clone the repository
-2) Open the project on  ANdoid Studio
+2) Open the project on  Andoid Studio
 3) Run on an android device or using the emulator
