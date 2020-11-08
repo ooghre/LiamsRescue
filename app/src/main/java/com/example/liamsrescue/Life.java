@@ -7,7 +7,7 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
-public class Spikes extends GameObject {
+public class Life extends GameObject {
 
     private Bitmap bitmap;
     private int maxX;
@@ -17,11 +17,11 @@ public class Spikes extends GameObject {
     private Rect hitBox;
 
     // Constructor
-    public Spikes(Context context, int screenX, int screenY) {
+    public Life(Context context, int screenX, int screenY) {
 
         super(context);
         bitmap = BitmapFactory.decodeResource
-                (context.getResources(), R.drawable.spikes);
+                (context.getResources(), R.drawable.heart);
         minY = 0;
         minX = 0;
         maxX = screenX;
@@ -61,15 +61,12 @@ public class Spikes extends GameObject {
         return hitBox;
     }
 
-    public void update() {
-    }
-
-    public int update(int playerSpeed){
+    public int update(){
         int respawned =0;
         y += speed;
 
         //respawn when off screen
-        if(y > maxY){
+        if(y > maxY || y<0){
             Random generator = new Random();
             speed = generator.nextInt(15)+ speedIncrease;
             speedIncrease++;
@@ -86,9 +83,3 @@ public class Spikes extends GameObject {
         return  respawned;
     }
 }
-
-
-
-
-
-

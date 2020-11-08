@@ -8,7 +8,7 @@ import android.graphics.drawable.AnimationDrawable;
 
 import java.util.Random;
 
-public class Bomb extends Obstacles {
+public class Bomb extends GameObject {
 
     // Detect enemies leaving the screen
     private int maxX;
@@ -46,7 +46,7 @@ public class Bomb extends Obstacles {
         return getSpeed();
     }
 
-    public Bitmap getBitMap(){
+    public Bitmap getBitmap(){
         Bitmap val = null;
         Random generator = new Random();
         int explode = generator.nextInt(maxY);
@@ -94,8 +94,8 @@ public class Bomb extends Obstacles {
         // Refresh hit box location
         hitBox.left = x;
         hitBox.top = y;
-        hitBox.right = x + this.getBitMap().getWidth();
-        hitBox.bottom = y + this.getBitMap().getHeight();
+        hitBox.right = x + this.getBitmap().getWidth();
+        hitBox.bottom = y + this.getBitmap().getHeight();
         return  respawned;
     }
 }

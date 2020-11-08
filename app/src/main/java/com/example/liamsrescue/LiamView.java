@@ -1,6 +1,7 @@
 package com.example.liamsrescue;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -43,6 +44,7 @@ public class LiamView extends SurfaceView implements Runnable {
     private Spikes spike2;
     private Spikes spike3;
     private Bomb bomb;
+    private Life life;
 
     private float timeRemaining;
     private int score;
@@ -52,10 +54,12 @@ public class LiamView extends SurfaceView implements Runnable {
     private SoundPool soundPool;
     int bump = -1;
 
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
+
     public LiamView(Context context, int x, int y) {
         super(context);
         this.context = context;
-
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC,0);
         try{
             AssetManager assetManager = context.getAssets();
@@ -65,6 +69,14 @@ public class LiamView extends SurfaceView implements Runnable {
         }catch(IOException e){
             Log.e("error", "failed to load sound file");
         }
+
+        // Get a reference to a file called HiScores.
+        // If id doesn't exist one is created
+        prefs = context.getSharedPreferences("HiScores",
+                context.MODE_PRIVATE);
+
+        editor = prefs.edit();
+        highestScore =  prefs.getInt("higest score", 0);
 
         screenX = x;
         screenY = y;
@@ -81,6 +93,7 @@ public class LiamView extends SurfaceView implements Runnable {
         spike2 = new Spikes(context, screenX, screenY);
         spike3 = new Spikes(context, screenX, screenY);
         bomb = new Bomb(context, screenX,screenY);
+        life = new Life(context, screenX, screenY);
 
         // Reset score
         score = 0;
@@ -126,6 +139,12 @@ public class LiamView extends SurfaceView implements Runnable {
             case (MotionEvent.ACTION_UP) :
                 if(! gameEnded) soundPool.play(bump, 1, 1, 0, 0, 1);
                 gameEnded = true;
+                if (score > highestScore) {
+                    //play new high score sound
+                    editor.putInt("higest score", score);
+                    editor.commit();
+                    highestScore = score;
+                }
 
                 return true;
             default :
@@ -144,35 +163,52 @@ public class LiamView extends SurfaceView implements Runnable {
         if(player.getHitBox().intersect(spike1.getHitBox())){
             hit = true;
             spike1.setY(10000);
+            player.reduceLives();
         }
         if(player.getHitBox().intersect(spike2.getHitBox())){
             hit = true;
             spike2.setY(10000);
+            player.reduceLives();
         }
         if(player.getHitBox().intersect(spike3.getHitBox())){
             hit = true;
             spike3.setY(10000);
+            player.reduceLives();
         }
         if(player.getHitBox().intersect(bomb.getHitBox())){
             hit = true;
             bomb.setY(-10000);
+            player.reduceLives();
+        }
+
+        if(player.getHitBox().intersect(life.getHitBox())){
+            life.setY(10000);
+            player.increaseLives();
         }
 
         if(hit){
             if(!gameEnded) {
-                soundPool.play(bump, 1, 1, 0, 0, 1);}
-            gameEnded = true;
+                soundPool.play(bump, 1, 1, 0, 0, 1);
+            }
+            if(player.getNumLives() ==0) {
+                gameEnded = true;
 
-            if (score> highestScore) {
-                highestScore = score;
+                if (score > highestScore) {
+                    //play new high score sound
+                    editor.putInt("higest score", score);
+                    editor.commit();
+                    highestScore = score;
+                }
             }
         }
 
         if(!gameEnded) {
+            //remove these getspeed
             score += spike1.update(player.getSpeed());
             score += spike2.update(player.getSpeed());
             score += spike3.update(player.getSpeed());
             score += bomb.update();
+            life.update();
             timeRemaining -= player.getSpeed();
         }
 
@@ -207,9 +243,17 @@ public class LiamView extends SurfaceView implements Runnable {
                             spike3.getX(),
                             spike3.getY(), paint);
             canvas.drawBitmap
-                    (bomb.getBitMap(),
+                    (bomb.getBitmap(),
                             bomb.getX(),
                             bomb.getY(), paint);
+
+            if(score%7== 0 && score !=0){
+                canvas.drawBitmap
+                        (life.getBitmap(),
+                                life.getX(),
+                                life.getY(), paint);
+            }
+
 
             if(!gameEnded) {
                 // Draw the hud

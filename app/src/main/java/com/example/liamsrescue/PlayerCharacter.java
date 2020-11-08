@@ -17,6 +17,7 @@ public class PlayerCharacter {
     int minY;
     private int speed = 0;
     private Rect hitBox;
+    private int numLives;
 
     // Constructor
     public PlayerCharacter(Context context, int screenX, int screenY) {
@@ -28,7 +29,7 @@ public class PlayerCharacter {
         maxY = screenY - bitmap.getHeight();
         minY = 0;
         hitBox = new Rect(x,y, bitmap.getWidth(), bitmap.getHeight());
-
+        numLives = 3;
 
     }
 
@@ -46,6 +47,18 @@ public class PlayerCharacter {
 
     public int getY() {
         return y;
+    }
+
+    public int getNumLives(){
+        return numLives;
+    }
+
+    public void reduceLives(){
+        numLives--;
+    }
+
+    public void increaseLives(){
+        numLives++;
     }
 
     public void setY(float newY) {
