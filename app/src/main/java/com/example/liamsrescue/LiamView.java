@@ -25,6 +25,7 @@ import androidx.core.view.MotionEventCompat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class LiamView extends SurfaceView implements Runnable {
 
@@ -45,6 +46,7 @@ public class LiamView extends SurfaceView implements Runnable {
     private Spikes spike3;
     private Bomb bomb;
     private Life life;
+    Random createLife = new Random();
 
     private float timeRemaining;
     private int score;
@@ -178,11 +180,12 @@ public class LiamView extends SurfaceView implements Runnable {
         if(player.getHitBox().intersect(bomb.getHitBox())){
             hit = true;
             bomb.setY(-10000);
+
             player.reduceLives();
         }
 
         if(player.getHitBox().intersect(life.getHitBox())){
-            life.setY(10000);
+            life.setY(100000);
             player.increaseLives();
         }
 
@@ -210,6 +213,10 @@ public class LiamView extends SurfaceView implements Runnable {
             score += bomb.update();
             life.update();
             timeRemaining -= player.getSpeed();
+
+            if(createLife.nextInt(1000) % 300 ==0 && life.getY()> screenY ){
+                life.setY(-100000); // spawn a new life object using random probability
+            }
         }
 
     }
@@ -247,12 +254,12 @@ public class LiamView extends SurfaceView implements Runnable {
                             bomb.getX(),
                             bomb.getY(), paint);
 
-            if(score%7== 0 && score !=0){
+            //if(score%7== 0 && score !=0){
                 canvas.drawBitmap
                         (life.getBitmap(),
                                 life.getX(),
                                 life.getY(), paint);
-            }
+           // }
 
 
             if(!gameEnded) {
@@ -262,6 +269,8 @@ public class LiamView extends SurfaceView implements Runnable {
                 paint.setTextSize(30);
                 canvas.drawText("   HighSCore:" + highestScore, 1, 20, paint);
                 canvas.drawText("Score:" + score, screenX / 4, 20,
+                        paint);
+                canvas.drawText("Lives left:" + player.getNumLives(), screenX / 2, 20,
                         paint);
             }
             else{

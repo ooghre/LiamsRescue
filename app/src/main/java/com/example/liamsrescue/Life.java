@@ -66,7 +66,7 @@ public class Life extends GameObject {
         y += speed;
 
         //respawn when off screen
-        if(y > maxY || y<0){
+        if(y<0){
             Random generator = new Random();
             speed = generator.nextInt(15)+ speedIncrease;
             speedIncrease++;
