@@ -67,15 +67,18 @@ public class Spikes extends Obstacles {
     public void update() {
     }
 
-    public void update(int playerSpeed){
+    public int update(int playerSpeed){
+        int respawned =0;
         y += speed;
 
         //respawn when off screen
         if(y > maxY){
             Random generator = new Random();
-            speed = generator.nextInt(10)+10;
-            x = generator.nextInt(maxX) - bitmap.getWidth();
-            y = bitmap.getHeight();
+            speed = generator.nextInt(15)+ speedIncrease;
+            speedIncrease++;
+            x = generator.nextInt(maxX-bitmap.getWidth());
+            y = 0;
+            respawned =1;
         }
 
         // Refresh hit box location
@@ -83,6 +86,7 @@ public class Spikes extends Obstacles {
         hitBox.top = y;
         hitBox.right = x + bitmap.getWidth();
         hitBox.bottom = y + bitmap.getHeight();
+        return  respawned;
     }
 }
 

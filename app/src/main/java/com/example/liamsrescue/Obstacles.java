@@ -8,12 +8,14 @@ public abstract class Obstacles {
 
     protected int x, y;
     protected int speed;
+    protected int speedIncrease;
 
     // Constructor
     public Obstacles(Context context) {
         x = 50;
         y = 50;
-        speed = 1;
+        speed = 5;
+        speedIncrease = 15;
     }
 
     public int getSpeed() {

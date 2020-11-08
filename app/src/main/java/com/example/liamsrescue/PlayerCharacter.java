@@ -20,8 +20,6 @@ public class PlayerCharacter {
 
     // Constructor
     public PlayerCharacter(Context context, int screenX, int screenY) {
-        System.out.println("x is " +screenX);
-        System.out.println("y is " + screenY);
         int x = screenX/4;
         int y = 1850;
         bitmap = BitmapFactory.decodeResource
