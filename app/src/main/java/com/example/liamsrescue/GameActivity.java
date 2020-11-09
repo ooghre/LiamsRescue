@@ -2,14 +2,13 @@ package com.example.liamsrescue;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Point;
-import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Display;
-import android.view.WindowManager;
 
+/*
+* This class is the activity that hows the View of the game while it is being played
+* */
 public class GameActivity extends Activity {
     // This is where the "Play" button from HomeActivity sends us
     private LiamView gameView;
@@ -40,9 +39,12 @@ public class GameActivity extends Activity {
         gameView.resume();
     }
 
+    /*
+    * This method controls what happens if the user goes back
+    * Go back to Main activity if the user goes back
+    * */
     @Override
     public void onBackPressed() {
-        // your code.
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();

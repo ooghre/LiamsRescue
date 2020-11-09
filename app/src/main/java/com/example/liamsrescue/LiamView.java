@@ -4,61 +4,65 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import androidx.core.view.MotionEventCompat;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class LiamView extends SurfaceView implements Runnable {
 
     private Context context;
+
+    //screen size
     private int screenX;
     private int screenY;
+
     volatile boolean playing = true;
     Thread gameThread = null;
+
     private PlayerCharacter player;
+
     // For drawing
     private Paint paint;
     private Canvas canvas;
     private SurfaceHolder ourHolder;
+
+    //game objects
     private Spikes spike1;
     private Spikes spike2;
     private Spikes spike3;
     private Bomb bomb;
     private Life life;
-    Random createLife = new Random();
+    private Random createLife = new Random();
 
+    //game values
     private int score;
     private int highestScore;
-    boolean gameEnded;
+    private boolean gameEnded;
 
+    //for controlling sound
     private SoundPool soundPool;
-    int bump = -1;
+    private int bump = -1;
 
+    //for storing high score
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
     public LiamView(Context context, int x, int y) {
         super(context);
         this.context = context;
+
+        //initialize soundpool for bump
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC,0);
         try{
             AssetManager assetManager = context.getAssets();
@@ -84,6 +88,10 @@ public class LiamView extends SurfaceView implements Runnable {
         startGame();
     }
 
+    /*
+    * This method initializes the game objects
+    * It also starts or restarts the game by setting score to 0 and game ended to false
+    * */
     private void startGame(){
         player = new PlayerCharacter(context, screenX, screenY);
         spike1 = new Spikes(context, screenX, screenY);
@@ -107,6 +115,9 @@ public class LiamView extends SurfaceView implements Runnable {
         }
     }
 
+    /*
+    * This method pauses the game thread if the user goes to the home page
+    * */
     public void pause(){
         playing = false;
         try {
@@ -117,28 +128,36 @@ public class LiamView extends SurfaceView implements Runnable {
         }
     }
 
+    /*
+    * This method controls the games response to user touch
+    * If the player touches the screen it starts the game
+    * If the player removes his hand from the screen it ends the game
+    * If the player moves on the screen it mooves the charcter with the player
+    * */
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
         int action = MotionEventCompat.getActionMasked(event);
 
         switch(action) {
-            case (MotionEvent.ACTION_DOWN) :
+            case (MotionEvent.ACTION_DOWN) :    //start game when the player touches screen
                 if(gameEnded)
                     startGame();
                 return true;
 
-            case (MotionEvent.ACTION_MOVE) :
+            case (MotionEvent.ACTION_MOVE) :    //move the charcter along with the players finger
                 player.setX(event.getX() - 100);
                 player.setY(event.getY() - 250);
-                player.update();
+                player.updateHitBox();
                 draw();
                 return true;
 
-            case (MotionEvent.ACTION_UP) :
-                if(! gameEnded) soundPool.play(bump, 1, 1, 0, 0, 1);
+            case (MotionEvent.ACTION_UP) :      //end the game if the player lifts off their finger from game
+
+                if(! gameEnded) //if the game isn't over play the sound to let the user know that its now over
+                    soundPool.play(bump, 1, 1, 0, 0, 1);
                 gameEnded = true;
-                if (score > highestScore) {
+                if (score > highestScore) { //reset high score if user beats high score
                     //play new high score sound
                     editor.putInt("higest score", score);
                     editor.commit();
@@ -151,49 +170,58 @@ public class LiamView extends SurfaceView implements Runnable {
         }
     }
 
+    /*
+    * This method resumes the game thread when the user goes back to the game after a pause
+    * */
     public void resume() {
         playing = true;
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /*
+    * This method checks for collisions between player and game objects
+    * If it detects a collision it removes the object from the screen and adds or removes from the players lives
+    * This method also ends the game if the players lives reach 0
+    * This method also keeps track and updates the players score
+    * */
     private void update(){
         boolean hit = false;
         if(player.getHitBox().intersect(spike1.getHitBox())){
             hit = true;
-            spike1.setY(10000);
+            spike1.setY(10000);  //if spike hits player, place spike on random location outside screen
             player.reduceLives();
         }
         if(player.getHitBox().intersect(spike2.getHitBox())){
             hit = true;
-            spike2.setY(10000);
+            spike2.setY(10000);   //if spike hits player, place spike on random location outside screen
             player.reduceLives();
         }
         if(player.getHitBox().intersect(spike3.getHitBox())){
             hit = true;
-            spike3.setY(10000);
+            spike3.setY(10000);   //if spike hits player, place spike on random location outside screen
             player.reduceLives();
         }
         if(player.getHitBox().intersect(bomb.getHitBox())){
             hit = true;
-            bomb.setY(-10000);
+            bomb.setY(10000);  //if bomb hits player, place bomb on random location outside screen
 
             player.reduceLives();
         }
 
         if(player.getHitBox().intersect(life.getHitBox())){
-            life.setY(100000);
+            life.setY(100000);  //if life hits player, place life object on random location outside screen
             player.increaseLives();
         }
 
         if(hit){
-            if(!gameEnded) {
+            if(!gameEnded) { // play sound to let the user know there was a bump
                 soundPool.play(bump, 1, 1, 0, 0, 1);
             }
             if(player.getNumLives() ==0) {
                 gameEnded = true;
 
-                if (score > highestScore) {
+                if (score > highestScore) {     //reset high score if user beats high score
                     //play new high score sound
                     editor.putInt("higest score", score);
                     editor.commit();
@@ -202,20 +230,25 @@ public class LiamView extends SurfaceView implements Runnable {
             }
         }
 
-        if(!gameEnded) {
-            //remove these getspeed
+        if(!gameEnded) {    //update score
             score += spike1.update();
             score += spike2.update();
             score += spike3.update();
             score += bomb.update();
             life.update();
 
+            // If life object is out of screen spawn a new life object using probability 4/1000
             if(createLife.nextInt(1000) % 300 ==0 && life.getY()> screenY ){
-                life.setY(-100000); // spawn a new life object using random probability
+                life.setY(-100000);  //respawn life by setting Y to negative
             }
         }
     }
 
+    /*
+    * This method draws objects on the screen
+    * It also draws the high score, num of lives and current score
+    * This method also draws a game over screen when the user exhaust all lives or lifts finger from screen
+    * */
     private void draw(){
         if(ourHolder.getSurface().isValid()){
 
@@ -223,32 +256,13 @@ public class LiamView extends SurfaceView implements Runnable {
             canvas.drawColor(Color.argb(255, 0, 0, 0));
             paint.setColor(Color.argb(255, 255, 255, 255));
 
-            canvas.drawBitmap(
-                    player.getBitmap(),
-                    player.getX(),
-                    player.getY(),
-                    paint);
-            canvas.drawBitmap
-                    (spike1.getBitmap(),
-                            spike1.getX(),
-                            spike1.getY(), paint);
-            canvas.drawBitmap
-                    (spike2.getBitmap(),
-                            spike2.getX(),
-                            spike2.getY(), paint);
-            canvas.drawBitmap
-                    (spike3.getBitmap(),
-                            spike3.getX(),
-                            spike3.getY(), paint);
-            canvas.drawBitmap
-                    (bomb.getBitmap(),
-                            bomb.getX(),
-                            bomb.getY(), paint);
-
-            canvas.drawBitmap
-                    (life.getBitmap(),
-                            life.getX(),
-                            life.getY(), paint);
+            //draw game objects and characters on screen
+            canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
+            canvas.drawBitmap(spike1.getBitmap(), spike1.getX(), spike1.getY(), paint);
+            canvas.drawBitmap(spike2.getBitmap(), spike2.getX(), spike2.getY(), paint);
+            canvas.drawBitmap(spike3.getBitmap(), spike3.getX(), spike3.getY(), paint);
+            canvas.drawBitmap(bomb.getBitmap(), bomb.getX(), bomb.getY(), paint);
+            canvas.drawBitmap(life.getBitmap(), life.getX(), life.getY(), paint);
 
             if(!gameEnded) {
                 // Draw the hud
@@ -262,7 +276,7 @@ public class LiamView extends SurfaceView implements Runnable {
                         paint);
             }
             else{
-                // Show pause screen
+                // Show Game over screen
                 paint.setTextSize(80);
                 paint.setTextAlign(Paint.Align.CENTER);
                 canvas.drawText("Game Over", screenX/2, 100, paint);
@@ -278,9 +292,13 @@ public class LiamView extends SurfaceView implements Runnable {
         }
     }
 
+    /*
+    * This method controls the frame rate of the game
+    * It sets the frame rate to 60 (1000/17) frames pe rsecond
+    * */
     private void control(){
         try {
-            gameThread.sleep(17);
+            gameThread.sleep(17); //sleep for 17 seconds to set framerate
         }
         catch (InterruptedException e) {
             Log.w("warning", e.getMessage());

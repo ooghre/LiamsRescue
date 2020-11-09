@@ -10,74 +10,51 @@ import java.util.Random;
 public class Life extends GameObject {
 
     private Bitmap bitmap;
-    private int maxX;
-    private int minX;
-    private int maxY;
-    private int minY;
-    private Rect hitBox;
 
     // Constructor
     public Life(Context context, int screenX, int screenY) {
-
-        super(context);
-        bitmap = BitmapFactory.decodeResource
-                (context.getResources(), R.drawable.heart);
-        minY = 0;
-        minX = 0;
-        maxX = screenX;
-        maxY = screenY;
+        super( screenX, screenY);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.heart);
 
         Random generator = new Random();
-        speed = generator.nextInt(6)+10;
         y = 0;
         x = generator.nextInt(maxX) - bitmap.getHeight();
         hitBox = new Rect(x,y, x+bitmap.getWidth(), y+bitmap.getHeight());
 
     }
 
-    public int getSpeed() {
-        return speed;
-    }
-
+    /*
+     * Method to return the bitmap of the life object
+     * */
     public Bitmap getBitmap() {
         return bitmap;
     }
 
-    public int getX() {
-        return super.getX();
-    }
-
+    /*
+     * setter for Y
+     * */
     public void setY(int y) {
         this.y = y;
     }
 
-    public int getY() {
-        return super.getY();
-    }
-
-    public Rect getHitBox() {
-        return hitBox;
-    }
-
-    public int update(){
-        int respawned =0;
+    /*
+     * This method updates the position of the life object
+     * This mathod gradually increases the speed of the life object by incrementing the speedIncrease each iteration
+     * This method also updates the position of the hitbox
+     * */
+    public void update(){
         y += speed;
 
         //respawn when off screen
         if(y<0){
             Random generator = new Random();
             speed = generator.nextInt(15)+ speedIncrease;
-            speedIncrease++;
+            speedIncrease++;  //gradually increase the speed of object
             x = generator.nextInt(maxX-bitmap.getWidth());
             y = 0;
-            respawned =1;
         }
 
         // Refresh hit box location
-        hitBox.left = x;
-        hitBox.top = y;
-        hitBox.right = x + bitmap.getWidth();
-        hitBox.bottom = y + bitmap.getHeight();
-        return  respawned;
+        updateHitBox(bitmap);
     }
 }

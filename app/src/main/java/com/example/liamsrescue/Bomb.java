@@ -4,100 +4,82 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.graphics.drawable.AnimationDrawable;
 
 import java.util.Random;
 
+/*
+*  This class represent the bomb objects on the screen.
+* It is a subclass of the gameObject class
+* */
 public class Bomb extends GameObject {
 
     // Detect enemies leaving the screen
-    private int maxX;
-    private int minX;
-    // Spawn enemies within screen bounds
-    private int maxY;
-    private int minY;
-    private Rect hitBox;
 
-    private Bitmap first_bitMap;
-    private Bitmap second_bitMap;
-    private Bitmap third_bitMap;
-    private int randBomb;
+    private Bitmap first_bitMap; //bitmap for bomb before it explodes
+    private Bitmap second_bitMap;  // bitmap for bomb after it explodes
+    private int randBomb;  //random number to control when bomb explodes
 
     // Constructor
     public Bomb(Context context, int screenX, int screenY) {
-
-        super(context);
+        super(screenX, screenY);
         first_bitMap =  BitmapFactory.decodeResource(context.getResources(), R.drawable.explode_1);
         second_bitMap =  BitmapFactory.decodeResource(context.getResources(), R.drawable.explode_2);
-        minY = 0;
-        minX = 0;
-        maxX = screenX;
-        maxY = screenY;
         Random generator = new Random();
-        speed = generator.nextInt(6)+10;
         y = 0;
-        x = generator.nextInt(maxX) - first_bitMap.getHeight();
+        x = generator.nextInt(maxX) - first_bitMap.getHeight();  //let x start at a random position
         hitBox = new Rect(x,y, x + first_bitMap.getWidth(), y + first_bitMap.getHeight());
         randBomb = generator.nextInt(maxY);
-
     }
 
-    public int getSpeed() {
-        return speed;
-    }
-
+    /*
+     * Method to return the bitmap of the bomb
+     * Note there are 2 bit maps associated with a bomb 1st bimap, bomb before esploding
+     * 2nd bitmap, bomb after exploding
+     * We return first or second bitmap based on whether the position of the bomb is greater than a random number
+     * */
     public Bitmap getBitmap(){
         Bitmap val = null;
         Random generator = new Random();
-        int explode = generator.nextInt(maxY);
 
-        if(y<=randBomb){
+        if(y<=randBomb){  //we at a random location "higher" in the screen. Return first bitmap
             val = first_bitMap;
         }
-        else{
+        else{  //we at a random location "lower" in the screen. Return second bitmap
             val = second_bitMap;
         }
 
         return val;
     }
 
-    public int getX() {
-        return super.getX();
-    }
-
+    /*
+     * setter for Y
+     * */
     public void setY(int y) {
         this.y = y;
     }
 
-    public int getY() {
-        return super.getY();
-    }
-
-    public Rect getHitBox() {
-        return hitBox;
-    }
-
+    /*
+     * This method updates the position of the bomb
+     * It returns 1 if the bomb reaches the bottom of the screen and is respawned else it returns 0
+     * This method also updates the position of the hitbox
+     * */
     public int update(){
         int respawned =0;
-        y += speed;
+        y += speed; //move the bomb down
 
         //respawn when off screen
-        if(y > maxY || y<0){
+        if(y > maxY){
             Random generator = new Random();
-            speed = generator.nextInt(10)+10;
+            speed = generator.nextInt(10)+10;  //give the respawned bomb a new random speed
             x = generator.nextInt(maxX-first_bitMap.getWidth());
             y = 0;
-            randBomb = generator.nextInt(maxY);
-            respawned = 1;
+            randBomb = generator.nextInt(maxY); //rest randBom
+            respawned = 1; //set respawned to 1
         }
-
-        // Refresh hit box location
-        hitBox.left = x;
-        hitBox.top = y;
-        hitBox.right = x + this.getBitmap().getWidth();
-        hitBox.bottom = y + this.getBitmap().getHeight();
+        updateHitBox(this.getBitmap());
         return  respawned;
     }
+
 }
 
 

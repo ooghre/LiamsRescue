@@ -3,11 +3,7 @@ package com.example.liamsrescue;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.view.Display;
-import android.view.WindowManager;
-import android.util.DisplayMetrics;
 
 public class PlayerCharacter {
 
@@ -21,7 +17,6 @@ public class PlayerCharacter {
     // Constructor
     public PlayerCharacter(Context context, int screenX, int screenY) {
 
-
         bitmap = BitmapFactory.decodeResource
                 (context.getResources(), R.drawable.character);
 
@@ -34,37 +29,66 @@ public class PlayerCharacter {
 
     }
 
+    /*
+     * Method to return the bitmap of the life object
+     * */
     public Bitmap getBitmap() {
         return bitmap;
     }
 
+    /*
+     * getter for the x
+     * */
     public int getX() {
         return x;
     }
 
+    /*
+     * getter for the y
+     * */
     public int getY() {
         return y;
     }
 
+    /*
+     * getter for numLives
+     * */
     public int getNumLives(){
         return numLives;
     }
 
+    /*
+     * reduce numLives by 1
+     * */
     public void reduceLives(){
         numLives--;
     }
 
+    /*
+     * increase num LIves by 1
+     * */
     public void increaseLives(){
         numLives++;
     }
 
+    /*
+     * setter for the y
+     * */
     public void setY(float newY) {
         y = (int)newY;
     }
+
+    /*
+     * setter for the x
+     * */
     public void setX(float newX) {
         x = (int)newX;
     }
-    public void update() {
+
+    /*
+     * this method updates the hitbox of the player
+     * */
+    public void updateHitBox() {
         // Refresh hit box location
         hitBox.left = x;
         hitBox.top = y;
