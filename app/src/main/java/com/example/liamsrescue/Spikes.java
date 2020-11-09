@@ -33,12 +33,12 @@ public class Spikes extends GameObject {
         x = generator.nextInt(maxX) - bitmap.getHeight();
         //x = 500;
         //y = 500;
-        hitBox = new Rect(x,y, bitmap.getWidth(), bitmap.getHeight());
+        hitBox = new Rect(x,y, x+bitmap.getWidth(), y+bitmap.getHeight());
 
     }
 
     public int getSpeed() {
-        return getSpeed();
+        return speed;
     }
 
     public Bitmap getBitmap() {
@@ -61,10 +61,7 @@ public class Spikes extends GameObject {
         return hitBox;
     }
 
-    public void update() {
-    }
-
-    public int update(int playerSpeed){
+    public int update(){
         int respawned =0;
         y += speed;
 

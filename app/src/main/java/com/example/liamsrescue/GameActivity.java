@@ -40,4 +40,12 @@ public class GameActivity extends Activity {
         gameView.resume();
     }
 
+    @Override
+    public void onBackPressed() {
+        // your code.
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+        finish();
+    }
+
 }

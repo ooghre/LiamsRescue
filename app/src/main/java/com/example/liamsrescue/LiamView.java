@@ -39,8 +39,6 @@ public class LiamView extends SurfaceView implements Runnable {
     private Paint paint;
     private Canvas canvas;
     private SurfaceHolder ourHolder;
-    //private int numTraps = 3;
-    //List<Spikes> spikesList = new ArrayList<Spikes>();
     private Spikes spike1;
     private Spikes spike2;
     private Spikes spike3;
@@ -48,7 +46,6 @@ public class LiamView extends SurfaceView implements Runnable {
     private Life life;
     Random createLife = new Random();
 
-    private float timeRemaining;
     private int score;
     private int highestScore;
     boolean gameEnded;
@@ -88,9 +85,7 @@ public class LiamView extends SurfaceView implements Runnable {
     }
 
     private void startGame(){
-
         player = new PlayerCharacter(context, screenX, screenY);
-
         spike1 = new Spikes(context, screenX, screenY);
         spike2 = new Spikes(context, screenX, screenY);
         spike3 = new Spikes(context, screenX, screenY);
@@ -101,6 +96,8 @@ public class LiamView extends SurfaceView implements Runnable {
         score = 0;
         gameEnded = false;
     }
+
+
     @Override
     public void run(){
         while(playing){
@@ -120,7 +117,6 @@ public class LiamView extends SurfaceView implements Runnable {
         }
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
@@ -130,14 +126,15 @@ public class LiamView extends SurfaceView implements Runnable {
             case (MotionEvent.ACTION_DOWN) :
                 if(gameEnded)
                     startGame();
-
                 return true;
+
             case (MotionEvent.ACTION_MOVE) :
                 player.setX(event.getX() - 100);
                 player.setY(event.getY() - 250);
                 player.update();
                 draw();
                 return true;
+
             case (MotionEvent.ACTION_UP) :
                 if(! gameEnded) soundPool.play(bump, 1, 1, 0, 0, 1);
                 gameEnded = true;
@@ -207,31 +204,25 @@ public class LiamView extends SurfaceView implements Runnable {
 
         if(!gameEnded) {
             //remove these getspeed
-            score += spike1.update(player.getSpeed());
-            score += spike2.update(player.getSpeed());
-            score += spike3.update(player.getSpeed());
+            score += spike1.update();
+            score += spike2.update();
+            score += spike3.update();
             score += bomb.update();
             life.update();
-            timeRemaining -= player.getSpeed();
 
             if(createLife.nextInt(1000) % 300 ==0 && life.getY()> screenY ){
                 life.setY(-100000); // spawn a new life object using random probability
             }
         }
-
     }
 
     private void draw(){
         if(ourHolder.getSurface().isValid()){
 
             canvas = ourHolder.lockCanvas();
-            //clear screen
             canvas.drawColor(Color.argb(255, 0, 0, 0));
-            // White specs of dust
             paint.setColor(Color.argb(255, 255, 255, 255));
-            //Draw the dust from our arrayList
 
-            // Draw the player
             canvas.drawBitmap(
                     player.getBitmap(),
                     player.getX(),
@@ -254,13 +245,10 @@ public class LiamView extends SurfaceView implements Runnable {
                             bomb.getX(),
                             bomb.getY(), paint);
 
-            //if(score%7== 0 && score !=0){
-                canvas.drawBitmap
-                        (life.getBitmap(),
-                                life.getX(),
-                                life.getY(), paint);
-           // }
-
+            canvas.drawBitmap
+                    (life.getBitmap(),
+                            life.getX(),
+                            life.getY(), paint);
 
             if(!gameEnded) {
                 // Draw the hud

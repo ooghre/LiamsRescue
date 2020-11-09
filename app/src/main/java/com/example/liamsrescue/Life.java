@@ -31,14 +31,12 @@ public class Life extends GameObject {
         speed = generator.nextInt(6)+10;
         y = 0;
         x = generator.nextInt(maxX) - bitmap.getHeight();
-        //x = 500;
-        //y = 500;
-        hitBox = new Rect(x,y, bitmap.getWidth(), bitmap.getHeight());
+        hitBox = new Rect(x,y, x+bitmap.getWidth(), y+bitmap.getHeight());
 
     }
 
     public int getSpeed() {
-        return getSpeed();
+        return speed;
     }
 
     public Bitmap getBitmap() {

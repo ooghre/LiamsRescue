@@ -37,13 +37,13 @@ public class Bomb extends GameObject {
         speed = generator.nextInt(6)+10;
         y = 0;
         x = generator.nextInt(maxX) - first_bitMap.getHeight();
-        hitBox = new Rect(x,y, first_bitMap.getWidth(), first_bitMap.getHeight());
+        hitBox = new Rect(x,y, x + first_bitMap.getWidth(), y + first_bitMap.getHeight());
         randBomb = generator.nextInt(maxY);
 
     }
 
     public int getSpeed() {
-        return getSpeed();
+        return speed;
     }
 
     public Bitmap getBitmap(){

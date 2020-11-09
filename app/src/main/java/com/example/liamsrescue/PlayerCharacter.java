@@ -15,26 +15,23 @@ public class PlayerCharacter {
     private int x, y;
     int maxY;
     int minY;
-    private int speed = 0;
     private Rect hitBox;
     private int numLives;
 
     // Constructor
     public PlayerCharacter(Context context, int screenX, int screenY) {
-        int x = screenX/4;
-        int y = 1850;
+
+
         bitmap = BitmapFactory.decodeResource
                 (context.getResources(), R.drawable.character);
 
+        x = screenX/2;
+        y = screenY-bitmap.getHeight();
         maxY = screenY - bitmap.getHeight();
         minY = 0;
-        hitBox = new Rect(x,y, bitmap.getWidth(), bitmap.getHeight());
+        hitBox = new Rect(x,y, x+bitmap.getWidth(), y+bitmap.getHeight());
         numLives = 3;
 
-    }
-
-    public int getSpeed() {
-        return speed;
     }
 
     public Bitmap getBitmap() {
