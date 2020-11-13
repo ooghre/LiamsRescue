@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 /*
-* This method contains the activity that shows the game instructions page
+* This class contains the activity that shows the game instructions page
 * */
 public class InstructionsActivity extends AppCompatActivity {
 

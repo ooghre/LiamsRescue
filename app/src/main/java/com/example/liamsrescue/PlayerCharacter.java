@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
+/*
+*  This class represent the character on the screen.
+ */
 public class PlayerCharacter {
 
     private Bitmap bitmap;

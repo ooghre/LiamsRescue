@@ -13,12 +13,15 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
 import androidx.core.view.MotionEventCompat;
-
 import java.io.IOException;
 import java.util.Random;
 
+/*
+*   This class contains the MAin View for the game as well as logic for he game control
+*   It contains a canvas on which we draw game object
+*   It also contains the game loop which controls playing the game, controlling frame rate and drawing to the canvas
+* */
 public class LiamView extends SurfaceView implements Runnable {
 
     private Context context;

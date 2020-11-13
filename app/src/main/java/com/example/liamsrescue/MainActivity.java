@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+/*
+*   This class is the starting point of the game
+*   It contains the main activity which enables us to navigate to the instructions of gameplay page
+* */
 public class MainActivity extends AppCompatActivity{
 
     @Override

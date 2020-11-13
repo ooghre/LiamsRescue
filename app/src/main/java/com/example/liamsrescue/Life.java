@@ -4,9 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-
 import java.util.Random;
 
+/*
+*  This class represent the Life objects on the screen.
+* It is a subclass of the gameObject class
+ */
 public class Life extends GameObject {
 
     private Bitmap bitmap;

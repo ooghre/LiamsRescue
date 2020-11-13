@@ -7,6 +7,10 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
+/*
+ *  This class represent the bomb objects on the screen.
+ * It is a subclass of the gameObject class
+* */
 public class Spikes extends GameObject {
 
     private Bitmap bitmap;
