@@ -6,5 +6,4 @@ To play
 2) Open the project on  Andoid Studio
 3) Run on an android device or using the emulator
 
-
-![Alt text](/LiamsRescue/Assets/screenshots_1.jpg?raw=true "Game Screen")
+![Alt text](ooghre/LiamsRescue/Assets/screenshots_1.jpg?raw=true "Game Screen")
