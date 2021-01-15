@@ -1,6 +1,9 @@
 # LiamsRescue
 Liam's Rescue is a mobile arcade style game for android devices. The game follows the main character Liam as he evades obstacles on route to save his friend from capture
 
+
+By Tobore and Michael.
+
 To play
 1) Clone the repository
 2) Open the project on  Andoid Studio
