@@ -13,6 +13,3 @@ To play
 1) Move LIam Using the touch screen of the phone to avoid obstacles and to get lives. 
 2) Be extra careful with the bombs as they can explode. 
 3) Have fun!
-
-# Screen Shots
-![Alt text](https://github.com/ooghre/LiamsRescue/blob/master/Assets/screenshot_1.jpeg?raw=true "Game Screen")
